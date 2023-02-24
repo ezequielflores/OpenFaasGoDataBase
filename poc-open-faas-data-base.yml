@@ -1,0 +1,14 @@
+version: 1.0
+provider:
+  name: openfaas
+  gateway: http://localhost:8080 #-->Ip/url del gateway
+functions:
+  poc-open-faas-data-base:
+    lang: golang-middleware
+    handler: ./poc-open-faas-data-base
+    image: localhost:5000/poc-open-faas-data-base:0.0.2 #-->Ip/url del registry
+    environment:
+      database_url: postgres://####:####@pocserverlessserver.postgres.database.azure.com/pocdatafaas?search_path=starwar&sslmode=require
+      cache_url: #####.redis.####:6380
+      cache_password: #########
+      cache_ttl: 60000
