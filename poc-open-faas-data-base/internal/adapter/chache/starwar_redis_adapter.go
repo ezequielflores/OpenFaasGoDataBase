@@ -59,19 +59,21 @@ func (s StarwarRedisAdapter) SaveCharacter(character *model.CharacterDetail, ctx
 	val, err := s.client.Set(ctx, key, characterJson, s.cacheOptions.Ttl).Result()
 
 	if err != nil {
-		log.Printf("error storing in redis cache %s\n", err.Error())
+		log.Printf("error storing in redis cache: %s\n", err.Error())
 		return &pkg.GenericException{
 			Msj:        fmt.Sprintf("error accessing to cache: %s", err.Error()),
 			StatusCode: http.StatusInternalServerError,
 		}
 	}
 
-	log.Printf("VALOR DEVUELTO AL INSERTAR EN REDIS: %s\n", val)
+	log.Printf("Value from redis: %s\n", val)
 
 	return nil
 }
 
 func (s StarwarRedisAdapter) FindCharacterById(character *model.CharacterIdentifier, ctx context.Context) (*model.CharacterDetail, error) {
+
+	log.Printf("Searching value in redis by id: %d\n", character.Id)
 
 	key := strconv.Itoa(character.Id)
 
@@ -79,7 +81,7 @@ func (s StarwarRedisAdapter) FindCharacterById(character *model.CharacterIdentif
 
 	switch {
 	case err == redis.Nil:
-		fmt.Println("key does not exist")
+		fmt.Printf("key %s does not exist\n", key)
 		return nil, nil
 
 	case err != nil:
@@ -95,7 +97,10 @@ func (s StarwarRedisAdapter) FindCharacterById(character *model.CharacterIdentif
 
 	if parsingJsonError != nil {
 		log.Printf("Error parsing json response from redis: %s\n", parsingJsonError.Error())
-		return nil, parsingJsonError
+		return nil, pkg.GenericException{
+			Msj:        fmt.Sprintf("error parsing json response from redis: %s\n", parsingJsonError.Error()),
+			StatusCode: http.StatusInternalServerError,
+		}
 	}
 
 	return &model.CharacterDetail{

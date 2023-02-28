@@ -17,7 +17,6 @@ import (
 	"os/signal"
 	"regexp"
 	"strconv"
-	"strings"
 	"syscall"
 	"time"
 )
@@ -89,11 +88,15 @@ func init() {
 
 func Handle(w http.ResponseWriter, r *http.Request) {
 
-	isGetCharacterDetail, _ := regexp.MatchString("/api/v1/starwar/characters/[0-9]+", r.URL.Path)
-	if isGetCharacterDetail {
+	isGetCharacterDetail, _ := regexp.MatchString("^/api/v1/starwar/characters/[0-9]+$", r.URL.Path)
+	if r.Method == http.MethodGet && isGetCharacterDetail {
 		routes["/characters/"](w, r)
 		return
-	} else if strings.HasPrefix(r.URL.Path, "/api/v1/starwar/characters") {
+	}
+
+	isCreateCharacter, _ := regexp.MatchString("^/api/v1/starwar/characters$", r.URL.Path)
+
+	if r.Method == http.MethodPost && isCreateCharacter {
 		routes["/characters"](w, r)
 		return
 	}

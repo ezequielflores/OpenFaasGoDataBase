@@ -86,6 +86,8 @@ func (a *StarwarRepositoryAdapter) CreateCharacter(character *model.Character, c
 
 func (a *StarwarRepositoryAdapter) FindCharacterById(character *model.CharacterIdentifier, ctx context.Context) (*model.CharacterDetail, error) {
 
+	log.Printf("FindCharacterById: %d\n", character.Id)
+
 	findResponse := repositoryModel.CharacterRepository{}
 	err := a.pool.QueryRow(ctx, selectCharacter, character.Id).
 		Scan(

@@ -28,7 +28,7 @@ func NewStarWarController(
 	}
 }
 
-func getRequestBody(r *http.Request) (*controllerModel.CreaterCharacterRequest, *pkg.GenericException) {
+func GetRequestBody(r *http.Request) (*controllerModel.CreaterCharacterRequest, *pkg.GenericException) {
 
 	decoder := json.NewDecoder(r.Body)
 	requestBody := &controllerModel.CreaterCharacterRequest{}
@@ -48,7 +48,7 @@ func getRequestBody(r *http.Request) (*controllerModel.CreaterCharacterRequest, 
 func (c *StarWarController) CreateStarWarCharacter(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	requestBody, requestError := getRequestBody(r)
+	requestBody, requestError := GetRequestBody(r)
 
 	if requestError != nil {
 		w.WriteHeader(requestError.StatusCode)
@@ -83,12 +83,6 @@ func (c *StarWarController) FindStarWarCharacter(w http.ResponseWriter, r *http.
 
 	split := strings.Split(r.URL.Path, "/")
 	count := len(split)
-
-	if count < 1 {
-		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte("Url Not Found"))
-		return
-	}
 
 	pathParam, pathError := strconv.Atoi(split[count-1])
 

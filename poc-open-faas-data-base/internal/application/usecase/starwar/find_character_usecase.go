@@ -14,7 +14,10 @@ type FindCharacter struct {
 	starwarCache      out.StarwarCache
 }
 
-func NewFindCharacterUseCase(starwarRepository out.StarwarRepository, starwarCache out.StarwarCache) *FindCharacter {
+func NewFindCharacterUseCase(
+	starwarRepository out.StarwarRepository,
+	starwarCache out.StarwarCache) *FindCharacter {
+
 	return &FindCharacter{
 		starwarRepository: starwarRepository,
 		starwarCache:      starwarCache,
